@@ -14,8 +14,15 @@ public:
   page();
   page(int pid, int page_id, int page_refer, int page_num, int last_accessed);
   
-  set_state();
+  void set_state();
   bool in_mem() const;
 };
-ostream &operator <<(ostream &ostr, const page pg);
+
+void FIFO();
+void LFU();
+void LRU();
+void MFU();
+void RAND();
+
+std::ostream &operator <<(std::ostream &ostr, const page pg);
 #endif

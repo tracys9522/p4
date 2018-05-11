@@ -1,6 +1,8 @@
 #include <iostream>
 #include <list>
 #include <queue>
+#include "page.h"
+#include "process.h"
 
 using namespace std;
 
@@ -8,11 +10,7 @@ queue <process*> job_queue[150];
 list <page*> page_list[100];
 
 //process size in pages
-int page_size[4];
-page_size[0] = 5;
-page_size[1] = 11;
-page_size[2] = 17;
-page_size[3] = 31;
+int page_size[4] = {5,11,17,31};
 
 //evenly distributed chance
 int processSize()
@@ -27,7 +25,7 @@ void initial_page_list()
   for(int i = 0; i < 100; i++)
   {
     page newpage = page();
-    newpage.pid = -1;
+    newpage._pid = -1;
     page_list.push_back(newpage);
   }
 }
@@ -38,10 +36,10 @@ void generate_job_queue()
   for(int i = 0; i < 150; i++)
   {
     process newprocess = process();
-    newprocess.pid = i;
-    newprocess.process_size = processSize();
-    newprocess.arrival_time = rand()%60;
-    newprocess.service_duration = rand()%150;
+    newprocess._pid = i;
+    newprocess._process_size = processSize();
+    newprocess._arrival_time = rand()%60;
+    newprocess._service_duration = rand()%150;
     job_queue.push(newprocess);
   }
 }
@@ -51,7 +49,7 @@ int arrival_compare(const void *s1, const void *s2)
 {
     process *a = (process *)s1;
     process *b = (process *)s2;
-    return a->arrival_time - b->arrival_time;
+    return a->_arrival_time - b->_arrival_time;
 }
 
 int main()
