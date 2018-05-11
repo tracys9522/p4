@@ -1,6 +1,6 @@
 #ifndef PAGE_H
 #define PAGE_H
-#include <ostream>
+#include <iostream>
 class page
 {
   int _pid;
@@ -14,6 +14,8 @@ public:
   page();
   page(int pid, int page_id, int page_refer, int page_num, int last_accessed);
   
+  int get_pid()const;
+  int get_page_id()const;
   void set_state();
   bool in_mem() const;
 };

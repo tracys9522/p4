@@ -25,8 +25,7 @@ void initial_page_list()
   for(int i = 0; i < 100; i++)
   {
     page newpage = page();
-    newpage._pid = -1;
-    page_list.push_back(newpage);
+    page_list[i].push_back(&newpage);
   }
 }
 
@@ -35,12 +34,11 @@ void generate_job_queue()
 {
   for(int i = 0; i < 150; i++)
   {
-    process newprocess = process();
-    newprocess._pid = i;
-    newprocess._process_size = processSize();
-    newprocess._arrival_time = rand()%60;
-    newprocess._service_duration = rand()%150;
-    job_queue.push(newprocess);
+    int size = processSize();
+    int arrival = rand()%60;
+    int service = rand()%150;
+    process newprocess = process(i, size, arrival, service);
+    job_queue[i].push(&newprocess);
   }
 }
 
@@ -49,7 +47,7 @@ int arrival_compare(const void *s1, const void *s2)
 {
     process *a = (process *)s1;
     process *b = (process *)s2;
-    return a->_arrival_time - b->_arrival_time;
+    return a->get_arrival_time() - b->get_arrival_time();
 }
 
 int main()
