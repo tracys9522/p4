@@ -47,7 +47,7 @@ int arrival_compare(const void *s1, const void *s2)
 {
     process *a = (process *)s1;
     process *b = (process *)s2;
-    return a->get_arrival_time() - b->get_arrival_time();
+    return a->arrival_time() - b->arrival_time();
 }
 
 int main()

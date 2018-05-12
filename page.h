@@ -17,8 +17,11 @@ public:
   
   int get_pid()const;
   int get_page_id()const;
+  int get_page_ref()const;
+  int get_time()const;
     
-  void set_state();
+  void set_refer(int page_ref);
+  void free_page(int time);
   bool in_mem() const;
 };
 

@@ -14,12 +14,13 @@ process::process(int pid, int process_size, int arrival_time, int service_durati
 }
 
 
-int process::get_arrival_time(){
-    return _arrival_time;
-}
+int process::pid()const { return _pid;}
+int process::process_size()const { return _process_size;}
+int process::arrival_time()const { return _arrival_time;}
+int process::service_duration()const { return _service_duration;}
 
 ostream &operator <<(ostream &ostr, const process proc)
 {
-    //std::cout << "process pid: " << proc._pid << ", size: " << proc._process_size << " , arrival: " << proc._arrival_time << ", service duration: " << proc._service_duration << std::endl;
+    ostr << "process pid: " << proc.pid() << ", size: " << proc.process_size() << " , arrival: " << proc.arrival_time() << ", service duration: " << proc.service_duration();
     return ostr;
 }

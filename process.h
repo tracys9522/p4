@@ -12,7 +12,11 @@ class process
 public:
   process();
   process(int pid, int process_size, int arrival_time, int service_duration);
-  int get_arrival_time();
+
+  int pid()const;
+  int process_size()const;
+  int arrival_time()const;
+  int service_duration()const;
 
 };
 ostream &operator <<(ostream &ostr, const process proc);

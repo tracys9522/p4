@@ -7,4 +7,4 @@ Need to finish:
 - paging algo (this is very easy. One person can just do all of them)
 - main.cpp (more complicated, might need assistance)
 
-Letty: I will work on page.cpp tonight
+Letty: I made some updates in process.cpp and page.cpp
