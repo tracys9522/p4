@@ -30,8 +30,8 @@ bool page::in_mem() const
 {
     return _state == NOT_IN_MEM ? false : true;
 }
-std::ostream &operator <<(std::ostream &ostr, const page pg)
+ostream &operator <<(ostream &ostr, const page pg)
 {
-    std::cout << "page pid: " << pg.get_pid() << ", page id: " << pg.get_page_id() << std::endl;
+    ostr << "page pid: " << pg.get_pid() << ", page id: " << pg.get_page_id();
     return ostr;
 }

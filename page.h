@@ -1,6 +1,7 @@
 #ifndef PAGE_H
 #define PAGE_H
-#include <iostream>
+#include <ostream>
+using namespace std;
 class page
 {
   int _pid;
@@ -16,6 +17,7 @@ public:
   
   int get_pid()const;
   int get_page_id()const;
+    
   void set_state();
   bool in_mem() const;
 };
@@ -26,5 +28,5 @@ void LRU();
 void MFU();
 void RAND();
 
-std::ostream &operator <<(std::ostream &ostr, const page pg);
+ostream &operator <<(ostream &ostr, const page pg);
 #endif

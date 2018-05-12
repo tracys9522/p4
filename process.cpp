@@ -18,7 +18,7 @@ int process::get_arrival_time(){
     return _arrival_time;
 }
 
-std::ostream &operator <<(std::ostream &ostr, const process proc)
+ostream &operator <<(ostream &ostr, const process proc)
 {
     //std::cout << "process pid: " << proc._pid << ", size: " << proc._process_size << " , arrival: " << proc._arrival_time << ", service duration: " << proc._service_duration << std::endl;
     return ostr;

@@ -24,8 +24,8 @@ void initial_page_list()
 {
   for(int i = 0; i < 100; i++)
   {
-    page newpage = page();
-    page_list[i].push_back(&newpage);
+    page *newpage = new page();
+    page_list[i].push_back(newpage);
   }
 }
 
@@ -37,8 +37,8 @@ void generate_job_queue()
     int size = processSize();
     int arrival = rand()%60;
     int service = rand()%150;
-    process newprocess = process(i, size, arrival, service);
-    job_queue[i].push(&newprocess);
+    process *newprocess = new process(i, size, arrival, service);
+    job_queue[i].push(newprocess);
   }
 }
 
@@ -98,7 +98,7 @@ int main()
 
     initial_page_list();
     generate_job_queue();
-    qsort(job_queue,150,sizeof(process),arrival_compare);
+    //qsort(job_queue,150,sizeof(process),arrival_compare); //segmentation fault here
 
   //}
 }

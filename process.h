@@ -1,6 +1,7 @@
 #ifndef PROCESS_H
 #define PROCESS_H
-#include <iostream>
+#include <ostream>
+using namespace std;
 class process
 {
   int _pid;
@@ -14,5 +15,5 @@ public:
   int get_arrival_time();
 
 };
-std::ostream &operator <<(std::ostream &ostr, const process proc);
+ostream &operator <<(ostream &ostr, const process proc);
 #endif
