@@ -4,25 +4,29 @@
 using namespace std;
 class page
 {
-  int _pid;
+  int _process_id;
   int _page_id;
-  int _page_referenced;
-  int _page_num;
-  int _last_accessed; //timestamp
-  enum {NOT_IN_MEM = 0, IN_MEM} _state;
+  int _last_referenced; //timestamp
+  int _frequency;
+  bool _memory;
 
 public:
   page();
-  page(int pid, int page_id, int page_refer, int page_num, int last_accessed);
+  page(int process_id, int page_id, int _last_referenced, int frequency);
+
+  int get_process_id() const;
+  int get_page_id() const;
+  int get_last_ref() const;
+  int get_frequency() const;
+  bool in_memory() const;
+
+  void set_process_id(int process_id);
+  void set_page_id(int page_id);
+  void set_last_referenced(int last_referenced);
+  void set_frequency(int frequency);
+  void set_memory(bool memory);
   
-  int get_pid()const;
-  int get_page_id()const;
-  int get_page_ref()const;
-  int get_time()const;
-    
-  void set_refer(int page_ref);
   void free_page(int time);
-  bool in_mem() const;
 };
 
 void FIFO();
