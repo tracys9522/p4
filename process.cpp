@@ -3,24 +3,44 @@
 process::process()
 {
     _pid = -1;
+    _page_num = -1;
+    _arrival_time = -1;
+    _running_time = -1;
+    _remaining_time = -1;
+    _last_page_used = -1;
+    _page_size = -1;
 }
 
-process::process(int pid, int process_size, int arrival_time, int service_duration)
+process::process(int pid, int page_size, int arrival_time, int running_time)
 {
     _pid = pid;
-    _process_size = process_size;
     _arrival_time = arrival_time;
-    _service_duration = service_duration;
+    _running_time = running_time;
+    _page_size = page_size;
+
+    _remaining_time = running_time;
+    _page_num = -1;
+    _last_page_used = -1;
 }
 
+int process::get_pid()const { return _pid;}
+int process::get_page_num() const { return _page_num;}
+int process::get_arrival_time()const{return _arrival_time;}
+int process::get_running_time()const{return _running_time;}
+int process::get_remaining_time()const{return _remaining_time;}
+int process::get_last_page_used()const{return _last_page_used;}
+int process::get_page_size()const{return _page_size;}
 
-int process::pid()const { return _pid;}
-int process::process_size()const { return _process_size;}
-int process::arrival_time()const { return _arrival_time;}
-int process::service_duration()const { return _service_duration;}
+
+void process::set_pid(int pid){ _pid = pid;}
+void process::set_page_num(int page_num){ _page_num = page_num;}
+void process::set_arrival_time(int arrival_time){ _arrival_time = arrival_time;}
+void process::set_remaining_time(int remaining_time){ _remaining_time = remaining_time;}
+void process::set_last_page_used(int page_used){ _last_page_used = page_used;}
+void process::set_page_size(int page_size) { _page_size = page_size;}
 
 ostream &operator <<(ostream &ostr, const process proc)
 {
-    ostr << "process pid: " << proc.pid() << ", size: " << proc.process_size() << " , arrival: " << proc.arrival_time() << ", service duration: " << proc.service_duration();
+    ostr << "process pid: " << proc.get_pid() << ", page size: " << proc.get_page_size() << " , arrival: " << proc.get_arrival_time() << ", service duration: " << proc.get_running_time();
     return ostr;
 }
