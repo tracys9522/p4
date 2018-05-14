@@ -6,7 +6,8 @@
 
 using namespace std;
 
-queue <process> job_queue; //150
+//
+priority_queue <process> job_queue; //150
 list <page> page_list;     //100
 
 //process size in pages
@@ -24,7 +25,8 @@ void initial_page_list()
 {
   for(int i = 0; i < 100; i++)
   {
-    page newpage = page();
+    int arrive = rand()%60;
+    page newpage = page(i,arrive);
     page_list.push_back(newpage);
   }
 }
