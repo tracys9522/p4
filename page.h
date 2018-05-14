@@ -18,7 +18,7 @@ public:
 
   int get_process_id() const;
   int get_page_id() const;
-  int get_arrival_time const;
+  int get_arrival_time() const;
   int get_last_ref() const;
   int get_frequency() const;
   bool in_memory() const;
@@ -32,12 +32,5 @@ public:
 
   void free_page(int time);
 };
-
-void FIFO();
-void LFU();
-void LRU();
-void MFU();
-void RAND();
-
 std::ostream &operator <<(std::ostream &ostr, const page pg);
 #endif

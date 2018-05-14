@@ -6,8 +6,14 @@
 
 using namespace std;
 
-//
-priority_queue <process> job_queue; //150
+struct compare
+{
+  bool operator () (const process &a, const process &b){
+    return a.get_arrival_time() > b.get_arrival_time();
+  }
+};
+
+priority_queue <process,vector<process>,compare> job_queue; //150
 list <page> page_list;     //100
 
 //process size in pages
@@ -94,9 +100,9 @@ int main()
     initial_page_list();
     generate_job_queue();
 
-    //qsort(job_queue,150,sizeof(process),arrival_compare);
+    //priority queue sorted by arrival time
     for (int i = 0; i < 150; i++) {
-      cout<<job_queue.front()<<endl;
+      cout<<job_queue.top()<<endl;
       job_queue.pop();
     }
 

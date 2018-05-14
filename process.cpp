@@ -41,6 +41,9 @@ void process::set_page_size(int page_size) { _page_size = page_size;}
 
 std::ostream &operator <<(std::ostream &ostr, const process proc)
 {
-    ostr << "process pid: " << proc.get_pid() << ", page size: " << proc.get_page_size() << " , arrival: " << proc.get_arrival_time() << ", service duration: " << proc.get_running_time();
+    ostr <<"process pid: " << proc.get_pid();
+    ostr<< "  page size: " << proc.get_page_size();
+    ostr<< "  arrival: " << proc.get_arrival_time();
+    ostr<< "  service duration: " << proc.get_running_time();
     return ostr;
 }
