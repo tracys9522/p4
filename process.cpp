@@ -39,7 +39,7 @@ void process::set_remaining_time(int remaining_time){ _remaining_time = remainin
 void process::set_last_page_used(int page_used){ _last_page_used = page_used;}
 void process::set_page_size(int page_size) { _page_size = page_size;}
 
-ostream &operator <<(ostream &ostr, const process proc)
+std::ostream &operator <<(std::ostream &ostr, const process proc)
 {
     ostr << "process pid: " << proc.get_pid() << ", page size: " << proc.get_page_size() << " , arrival: " << proc.get_arrival_time() << ", service duration: " << proc.get_running_time();
     return ostr;

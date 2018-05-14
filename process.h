@@ -1,7 +1,7 @@
 #ifndef PROCESS_H
 #define PROCESS_H
 #include <ostream>
-using namespace std;
+
 class process
 {
   int _pid;
@@ -31,5 +31,5 @@ public:
   void set_last_page_used(int page_used);
   void set_page_size(int page_size);
 };
-ostream &operator <<(ostream &ostr, const process proc);
+std::ostream &operator <<(std::ostream &ostr, const process proc);
 #endif

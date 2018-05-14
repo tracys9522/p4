@@ -1,7 +1,7 @@
 #ifndef PAGE_H
 #define PAGE_H
 #include <ostream>
-using namespace std;
+
 class page
 {
   int _process_id;
@@ -25,7 +25,7 @@ public:
   void set_last_referenced(int last_referenced);
   void set_frequency(int frequency);
   void set_memory(bool memory);
-  
+
   void free_page(int time);
 };
 
@@ -35,5 +35,5 @@ void LRU();
 void MFU();
 void RAND();
 
-ostream &operator <<(ostream &ostr, const page pg);
+std::ostream &operator <<(std::ostream &ostr, const page pg);
 #endif

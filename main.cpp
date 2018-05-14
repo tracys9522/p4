@@ -6,8 +6,8 @@
 
 using namespace std;
 
-queue <process*> job_queue[150];
-list <page*> page_list[100];
+queue <process> job_queue; //150
+list <page> page_list;     //100
 
 //process size in pages
 int page_size[4] = {5,11,17,31};
@@ -24,8 +24,8 @@ void initial_page_list()
 {
   for(int i = 0; i < 100; i++)
   {
-    page *newpage = new page();
-    page_list[i].push_back(newpage);
+    page newpage = page();
+    page_list.push_back(newpage);
   }
 }
 
@@ -37,18 +37,11 @@ void generate_job_queue()
     int size = processSize();
     int arrival = rand()%60;
     int service = rand()%150;
-    process *newprocess = new process(i, size, arrival, service);
-    job_queue[i].push(newprocess);
+    process newprocess = process(i, size, arrival, service);
+    job_queue.push(newprocess);
   }
 }
 
-//compare arrival time
-int arrival_compare(const void *s1, const void *s2)
-{
-    process *a = (process *)s1;
-    process *b = (process *)s2;
-    return a->get_arrival_time() - b->get_arrival_time();
-}
 
 int main()
 {
@@ -98,7 +91,14 @@ int main()
 
     initial_page_list();
     generate_job_queue();
-    //qsort(job_queue,150,sizeof(process),arrival_compare); //segmentation fault here
+
+    //qsort(job_queue,150,sizeof(process),arrival_compare);
+    for (int i = 0; i < 150; i++) {
+      cout<<job_queue.front()<<endl;
+      job_queue.pop();
+    }
+
+
 
   //}
 }

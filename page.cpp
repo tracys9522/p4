@@ -34,7 +34,7 @@ void page::free_page(int time){
     _last_referenced = time;
 }
 
-ostream &operator <<(ostream &ostr, const page pg)
+std::ostream &operator <<(std::ostream &ostr, const page pg)
 {
     ostr << "page pid: " << pg.get_process_id() << ", page id: " << pg.get_page_id();
     return ostr;
