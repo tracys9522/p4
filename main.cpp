@@ -62,6 +62,48 @@ bool in_list(page *new_page)
 	return false;
 }
 
+void remove_min()
+{
+	int min = page_list.begin()->_last_referenced;
+	for (list<page>::iterator it = page_list.begin(); it != page_list.end(); ++it)
+	{
+		if(it->_last_referenced <= min)
+		{
+			min = it->_last_referenced;
+		}
+	}
+	for (list<page>::iterator it = page_list.begin(); it != page_list.end(); ++it)
+	{
+		if(it->_last_referenced == min)
+		{
+			page_list.erase(it);
+			break;
+		}
+	}
+	return;
+}
+
+void remove_max()
+{
+	int max = page_list.begin()->_last_referenced;
+	for (list<page>::iterator it = page_list.begin(); it != page_list.end(); ++it)
+	{
+		if(it->_last_referenced >= max)
+		{
+			max = it->_last_referenced;
+		}
+	}
+	for (list<page>::iterator it = page_list.begin(); it != page_list.end(); ++it)
+	{
+		if(it->_last_referenced == min)
+		{
+			page_list.erase(it);
+			break;
+		}
+	}
+	return;
+}
+
 bool FIFO(page *new_page)
 {
 	bool hit = false;
@@ -121,7 +163,65 @@ bool LFU(page *new_page)
 		//page list is full
 		if(page_list.size() >= 50)
 		{
-			page_list.pop_front();
+			remove_min();
+		}
+		new_page->_last_referenced = 0;
+		page_list.push_back(new_page);
+	}
+	
+	//page in list
+	else
+	{
+		hit = true;
+		int temp = new_page->_last_referenced;
+		page_list.remove(new_page);
+		new_page->_last_referenced = temp + 1;
+		page_list.push_back(new_page);
+	}
+	return hit;
+}
+
+bool MFU(page *new_page)
+{
+	bool hit = false;
+	
+	//page not in list
+	if(!in_list(new_page))
+	{
+		//page list is full
+		if(page_list.size() >= 50)
+		{
+			remove_max();
+		}
+		new_page->_last_referenced = 0;
+		page_list.push_back(new_page);
+	}
+	
+	//page in list
+	else
+	{
+		hit = true;
+		int temp = new_page->_last_referenced;
+		page_list.remove(new_page);
+		new_page->_last_referenced = temp + 1;
+		page_list.push_back(new_page);
+	}
+	return hit;
+}
+
+bool RAND(page *new_page)
+{
+	bool hit = false;
+	
+	//page not in list
+	if(!in_list(new_page))
+	{
+		//page list is full
+		if(page_list.size() >= 50)
+		{
+			list<page>::iterator it = page_list.begin();
+			advance(it,random(0,page_list.size()-1));
+			page_list.erase(it);
 		}
 		page_list.push_back(new_page);
 	}
@@ -132,55 +232,6 @@ bool LFU(page *new_page)
 		hit = true;
 	}
 	return hit;
-	/*
-	if page is not in table
-		data->miss++;
-			
-		if table is full
-			remove least referenced
-		
-		page_list.push_back(page);
-		set new page reference to 0
-		set least referenced
-		
-	if page is in table 
-		move page to back and increment reference
-		set least referenced
-	*/
-	
-}
-
-bool MFU(page *new_page)
-{
-	/*
-	if page is not in table
-		data->miss++;
-			
-		if table is full
-			remove most referenced
-		
-		page_list.push_back(page);
-		set new page reference to 0
-		set most referenced
-		
-	if page is in table 
-		move page to back and increment reference	
-		set most referenced
-	*/
-}
-
-bool RAND(page *new_page)
-{
-	/*
-	if page is not in table
-		data->miss++;
-			
-		if table is full
-			remove random
-		
-		page_list.push_back(page);
-		
-	*/
 }
 
 int main()
