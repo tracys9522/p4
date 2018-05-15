@@ -13,12 +13,6 @@ struct compare
   }
 };
 
-struct data
-{
-	int hit;
-	int miss;
-};
-
 priority_queue <process,vector<process>,compare> job_queue; //150
 list <page> page_list;     //100
 
@@ -44,7 +38,7 @@ void initial_page_list()
 }
 
 //generate 150 jobs
-void generate_job_queue()
+bool generate_job_queue()
 {
   for(int i = 0; i < 150; i++)
   {
@@ -56,7 +50,7 @@ void generate_job_queue()
   }
 }
 
-void FIFO(struct *data)
+bool FIFO()
 {
 	/*
 	if page is not in table
@@ -70,7 +64,7 @@ void FIFO(struct *data)
 	*/	
 }
 
-void LRU(struct *data)
+bool LRU()
 {
 	/*
 	if page is not in table
@@ -86,7 +80,7 @@ void LRU(struct *data)
 	*/	
 }
 
-void LFU(struct *data)
+bool LFU()
 {
 	/*
 	if page is not in table
@@ -106,7 +100,7 @@ void LFU(struct *data)
 	
 }
 
-void MFU(struct *data)
+bool MFU()
 {
 	/*
 	if page is not in table
@@ -125,7 +119,7 @@ void MFU(struct *data)
 	*/
 }
 
-void RAND(struct *data)
+bool RAND()
 {
 	/*
 	if page is not in table
@@ -157,30 +151,28 @@ int main()
   srand(seed);
 
   //for (int i = 0; i < 5; i++) {
-		d.hit = 0;
-		d.miss = 0;
 
 		initial_page_list();
 		generate_job_queue();
 		
 		
-		//simulation
-		
+		//if new page
+		bool hit = false;
 		switch (input) {
 			case 1:
-			  FIFO(*d);
+			  hit = FIFO();
 			  break;
 			case 2:
-			  LRU(*d);
+			  hit = LRU();
 			  break;
 			case 3:
-			  LFU(*d);
+			  hit = LFU();
 			  break;
 			case 4:
-			  MFU(*d);
+			  hit = MFU();
 			  break;
 			case 5:
-			  RAND(*d);
+			  hit = RAND();
 			  break;
 			default:
 			  cout << "error" <<endl;
