@@ -16,18 +16,17 @@ public:
   process();
   process(int pid, int page_size, int arrival_time, int running_time);
 
-  int get_pid()const;
-  int get_page_num()const;
-  int get_arrival_time()const;
-  int get_running_time()const;
-  int get_remaining_time()const;
-  int get_last_page_used()const;
-  int get_page_size()const;
+  int get_pid() const;
+  int get_page_num() const;
+  int get_arrival_time() const;
+  int get_running_time() const;
+  int get_end_time() const;
+  int get_last_page_used() const;
+  int get_page_size() const;
 
   void set_pid(int pid);
   void set_page_num(int page_num);
   void set_arrival_time(int arrival_time);
-  void set_remaining_time(int remaining_time);
   void set_last_page_used(int page_used);
   void set_page_size(int page_size);
 };
