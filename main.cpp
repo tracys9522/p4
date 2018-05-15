@@ -1,6 +1,7 @@
 #include <iostream>
 #include <list>
 #include <queue>
+#include <algorithm>
 #include "page.h"
 #include "process.h"
 
@@ -50,38 +51,87 @@ bool generate_job_queue()
   }
 }
 
-bool FIFO()
+bool in_list(page *new_page)
 {
-	/*
-	if page is not in table
-		data->miss++;
-			
-		if table is full
-			page_list.pop_front();
-			
-		page_list.push_back(page);
-		
-	*/	
+	list <page>::iterator it;
+	it = find(page_list.begin(), page_list.end(),new_page);
+	if(it != page_list.end())
+	{
+		return true;
+	}
+	return false;
 }
 
-bool LRU()
+bool FIFO(page *new_page)
 {
-	/*
-	if page is not in table
-		data->miss++;
-			
-		if table is full
+	bool hit = false;
+	
+	//page not in list
+	if(!in_list(new_page))
+	{
+		//page list is full
+		if(page_list.size() >= 50)
+		{
 			page_list.pop_front();
-		
-		page_list.push_back(page);
-		
-	if page is in table 
-		page_list.push_back(page);
-	*/	
+		}
+		page_list.push_back(new_page);
+	}
+	
+	//page in list
+	else
+	{
+		hit = true;
+	}
+	return hit;
 }
 
-bool LFU()
+bool LRU(page *new_page)
 {
+	bool hit = false;
+	
+	//page not in list
+	if(!in_list(new_page))
+	{
+		//page list is full
+		if(page_list.size() >= 50)
+		{
+			//front is least recently used
+			page_list.pop_front();
+		}
+		page_list.push_back(new_page);
+	}
+	
+	//page in list
+	else
+	{
+		hit = true;
+		page_list.remove(new_page);
+		page_list.push_back(new_page);
+	}
+	return hit;
+}
+
+bool LFU(page *new_page)
+{
+	bool hit = false;
+	
+	//page not in list
+	if(!in_list(new_page))
+	{
+		//page list is full
+		if(page_list.size() >= 50)
+		{
+			page_list.pop_front();
+		}
+		page_list.push_back(new_page);
+	}
+	
+	//page in list
+	else
+	{
+		hit = true;
+	}
+	return hit;
 	/*
 	if page is not in table
 		data->miss++;
@@ -100,7 +150,7 @@ bool LFU()
 	
 }
 
-bool MFU()
+bool MFU(page *new_page)
 {
 	/*
 	if page is not in table
@@ -119,7 +169,7 @@ bool MFU()
 	*/
 }
 
-bool RAND()
+bool RAND(page *new_page)
 {
 	/*
 	if page is not in table
@@ -160,19 +210,19 @@ int main()
 		bool hit = false;
 		switch (input) {
 			case 1:
-			  hit = FIFO();
+			  hit = FIFO(*new_page);
 			  break;
 			case 2:
-			  hit = LRU();
+			  hit = LRU(*new_page);
 			  break;
 			case 3:
-			  hit = LFU();
+			  hit = LFU(*new_page);
 			  break;
 			case 4:
-			  hit = MFU();
+			  hit = MFU(*new_page);
 			  break;
 			case 5:
-			  hit = RAND();
+			  hit = RAND(*new_page);
 			  break;
 			default:
 			  cout << "error" <<endl;
