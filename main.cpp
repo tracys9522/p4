@@ -5,9 +5,7 @@
 #include <unordered_map>
 #include "page.h"
 #include "process.h"
-
-#define kTicksPerSec 10 // one tick is 100 ms
-#define kMaxListLen  50
+#include "constants.h"
 
 using namespace std;
 
