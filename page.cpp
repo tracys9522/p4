@@ -37,7 +37,7 @@ bool page::in_memory()const{ return _memory == 0? false : true; }
 
 void page::set_process_id(int process_id){ _process_id = process_id; }
 void page::set_page_id(int page_id){ _page_id = page_id; }
-void page::set_last_referenced(int last_referenced){ _last_referenced = last_referenced; }
+void page::set_last_ref(int last_referenced){ _last_referenced = last_referenced; }
 void page::set_frequency(int frequency){ _frequency = frequency; }
 void page::set_memory(bool memory){ _memory = memory; }
 void page::free_page(int time){

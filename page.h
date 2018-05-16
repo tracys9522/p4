@@ -26,7 +26,7 @@ public:
   void set_process_id(int process_id);
   void set_page_id(int page_id);
   void set_arrival_time(int arrival);
-  void set_last_referenced(int last_referenced);
+  void set_last_ref(int last_referenced);
   void set_frequency(int frequency);
   void set_memory(bool memory);
 
