@@ -4,20 +4,32 @@ page::page()
 {
   _process_id = -1;
   _page_id = -1;
-  _arrival_time = -1;
+  // _arrival_time = -1;
   _last_referenced = -1;
   _frequency = 0;
   _memory = false;
+  _page_size = 11;
 }
-page::page(int page_id, int arrival)
+// page::page(int page_id, int arrival)
+// {
+//   _page_id = page_id;
+//   _arrival_time = arrival;
+//
+//   _process_id = -1;
+//   _last_referenced = -1;
+//   _frequency = 0;
+//   _memory = false;
+// }
+page::page(int process_id, int page_id, int page_size)
 {
+  _process_id = process_id;
   _page_id = page_id;
-  _arrival_time = arrival;
+  // _arrival_time = arrival;
 
-  _process_id = -1;
   _last_referenced = -1;
   _frequency = 0;
   _memory = false;
+  _page_size = page_size;
 }
 /*
 page::page(int process_id, int page_id, int last_referenced, int frequency)
@@ -30,7 +42,7 @@ page::page(int process_id, int page_id, int last_referenced, int frequency)
 */
 int page::get_process_id()const{ return _process_id; }
 int page::get_page_id()const{ return _page_id; }
-int page::get_arrival_time()const {return _arrival_time; }
+// int page::get_arrival_time()const {return _arrival_time; }
 int page::get_last_ref()const{ return _last_referenced; }
 int page::get_frequency()const{ return _frequency; }
 bool page::in_memory()const{ return _memory == 0? false : true; }
