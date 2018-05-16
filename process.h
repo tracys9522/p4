@@ -22,7 +22,7 @@ public:
 
   int get_pid() const;
   // int get_page_num() const;
-  std::queue<page>& get_pages();
+  std::queue<page>* get_pages();
   int get_arrival_time() const;
   int get_running_time() const;
   int get_end_time() const;

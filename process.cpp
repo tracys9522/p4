@@ -45,7 +45,7 @@ process::process(int pid, int page_size, int arrival_time, int running_time)
 
 int process::get_pid() const { return _pid; }
 // int process::get_page_num() const { return _page_num; }
-std::queue<page>& process::get_pages() { return _pages; }
+std::queue<page>* process::get_pages() { return &_pages; }
 int process::get_arrival_time() const { return _arrival_time; }
 int process::get_running_time() const { return _running_time; }
 int process::get_end_time() const { return _arrival_time + _running_time; }
@@ -57,7 +57,7 @@ std::string process::str() {
   ss << ", pages(" << _pages.size() << "): [ ";
   for (int i = 0; i < _pages.size(); i++) {
     page p = _pages.front();
-    ss << p.get_page_id() << " ";
+    ss << p.get_addr() << " ";
     _pages.push(p);
     _pages.pop();
   }
