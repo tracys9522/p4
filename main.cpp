@@ -53,13 +53,13 @@ int processSize()
 // }
 
 //generate 150 jobs
-bool generate_job_queue()
+void generate_job_queue()
 {
   for (int i = 0; i < 150; i++)
   {
     int size = processSize();
     int arrival = rand()%60;
-    int service = rand()%150;
+    int service = rand()%5+1;
     // TODO: Generate `service * 10` pages for each process and
     //       place them in an std::queue.
     process* newprocess = new process(i, size, arrival, service);
@@ -311,6 +311,16 @@ results_t simulate(ReplaceFunc replace) {
   return results_t(hits, misses);
 }
 
+void test() {
+  generate_job_queue();
+
+  // this is quite destructive
+  while (job_queue.size() > 0) {
+    std::cout << job_queue.top()->str() << std::endl;
+    job_queue.pop();
+  }
+}
+
 int main()
 {
   ReplaceFunc repl_func;
@@ -349,6 +359,9 @@ int main()
   int seed = time(0);
   srand(seed);
 
+  // test();
+  // return 0;
+
   for (int i = 0; i < 5; i++) {
 
 		// initial_page_list();
@@ -361,5 +374,7 @@ int main()
 		// }
 
     results_t results = simulate(repl_func);
+    printf("hits: %4d / %4d\n",   results.hits,   results.hits+results.misses);
+    printf("misses: %4d / %4d\n", results.misses, results.hits+results.misses);
   }
 }
