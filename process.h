@@ -2,6 +2,7 @@
 #define PROCESS_H
 #include <ostream>
 #include <queue>
+#include <string>
 #include "page.h"
 
 class process
@@ -27,6 +28,7 @@ public:
   int get_end_time() const;
   int get_last_page_used() const;
   int get_page_size() const;
+  std::string str();
 
   void set_pid(int pid);
   // void set_page_num(int page_num);

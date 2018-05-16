@@ -1,3 +1,4 @@
+#include <sstream>
 #include "process.h"
 #include "constants.h"
 
@@ -8,9 +9,9 @@ int generate_next_page(int prev) {
   int next;
   if (rand()%10 < 7) {
     // make it adjacent to prev
-    next = prev + rand()%3 - 1;
+    next = prev + rand()%3 - 1 + 11;
   } else {
-    next = prev + rand()%8 + 2;
+    next = prev + rand()%8 + 2 + 11;
   }
   return next % 11; // wraps from 0 to 10
 }
@@ -50,6 +51,19 @@ int process::get_running_time() const { return _running_time; }
 int process::get_end_time() const { return _arrival_time + _running_time; }
 int process::get_last_page_used() const { return _last_page_used; }
 int process::get_page_size() const { return _page_size; }
+std::string process::str() {
+  std::ostringstream ss;
+  ss << "pid: " << _pid << ", psize: " << _page_size << ", arrival: " << _arrival_time << ", runtime: " << _running_time;
+  ss << ", pages(" << _pages.size() << "): [ ";
+  for (int i = 0; i < _pages.size(); i++) {
+    page p = _pages.front();
+    ss << p.get_page_id() << " ";
+    _pages.push(p);
+    _pages.pop();
+  }
+  ss << "]";
+  return ss.str();
+}
 
 void process::set_pid(int pid) { _pid = pid; }
 // void process::set_page_num(int page_num) { _page_num = page_num; }
