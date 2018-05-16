@@ -42,15 +42,15 @@ int processSize()
 }
 
 //100 pages as linked list
-void initial_page_list()
-{
-  for (int i = 0; i < 100; i++)
-  {
-    int arrive = rand()%60;
-    page* newpage = new page(i,arrive);
-    page_list.push_back(newpage);
-  }
-}
+// void initial_page_list()
+// {
+//   for (int i = 0; i < 100; i++)
+//   {
+//     int arrive = rand()%60;
+//     page* newpage = new page(i,arrive);
+//     page_list.push_back(newpage);
+//   }
+// }
 
 //generate 150 jobs
 bool generate_job_queue()
@@ -252,6 +252,20 @@ bool RAND(page *new_page)
 	return hit;
 }
 
+int remove_process_pages(int pid) {
+  int count = 0;
+  for (auto it = page_list.begin(); it != page_list.end(); /* nothing */) {
+    if ((*it)->get_process_id() == pid) {
+      it = page_list.erase(it);
+      ++count;
+    } else {
+      ++it;
+    }
+  }
+  fprintf(stderr, "Removed %d pages with pid %d\n", count, pid);
+  return count;
+}
+
 results_t simulate(ReplaceFunc replace) {
   int hits = 0, misses = 0;
 
@@ -267,15 +281,30 @@ results_t simulate(ReplaceFunc replace) {
       job_queue.pop();
     }
 
-    for (std::pair<int, process*> element : current_processes) {
-      // if process has no more memory references, then:
-      // - remove all of its pages from the page table
-      // - remove it from the process map
-      // TODO
-      // break;
+    for (auto it = current_processes.begin(); it != current_processes.end(); /* nothing */ ) {
+      auto pages = it->second->get_pages();
+      if (pages.size() == 0) {
+        // if process has no more memory references, then:
+        // - remove all of its pages from the page table
+        remove_process_pages(it->second->get_pid());
+        // - remove it from the process map
+        it = current_processes.erase(it);
+
+        break;
+      }
 
       // do the next memory reference (& increment hits/misses)
-      // TODO
+      bool hit = replace(&pages.front());
+      if (hit) {
+        ++hits;
+      } else {
+        ++misses;
+      }
+
+      // pop the memory reference off the process's queue
+      pages.pop();
+
+      ++it;
     }
   }
 
@@ -322,7 +351,7 @@ int main()
 
   for (int i = 0; i < 5; i++) {
 
-		initial_page_list();
+		// initial_page_list();
 		generate_job_queue();
 
 		// priority queue sorted by arrival time
