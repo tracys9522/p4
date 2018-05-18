@@ -31,31 +31,19 @@ struct results_t {
 
 typedef bool (*ReplaceFunc)(page*);
 
-// priority_queue<process*, vector<process*>,compare> job_queue; //150
 list<page*> page_list;     //100
 
-//process size in pages
+// process size in pages
 int page_size[4] = {5,11,17,31};
 
-//evenly distributed chance
+// evenly distributed chance
 int processSize()
 {
   int choice = rand()%4;
   return page_size[choice];
 }
 
-//100 pages as linked list
-// void initial_page_list()
-// {
-//   for (int i = 0; i < 100; i++)
-//   {
-//     int arrive = rand()%60;
-//     page* newpage = new page(i,arrive);
-//     page_list.push_back(newpage);
-//   }
-// }
-
-//generate 150 jobs
+// generate 150 jobs
 priority_queue<process*, vector<process*>, compare> generate_job_queue()
 {
   #ifdef DEBUG
@@ -67,8 +55,6 @@ priority_queue<process*, vector<process*>, compare> generate_job_queue()
     int size = processSize();
     int arrival = rand()%kTotalRuntime;
     int service = rand()%5+1;
-    // TODO: Generate `service * 10` pages for each process and
-    //       place them in an std::queue.
     process* newprocess = new process(i, size, arrival, service);
     job_queue.push(newprocess);
   }
@@ -100,14 +86,6 @@ bool in_list(page *new_page)
   }
   #endif
   return found;
-
-  // // list <page>::iterator it;
-	// auto it = find(page_list.begin(), page_list.end(),new_page);
-	// if (it != page_list.end())
-	// {
-	// 	return true;
-	// }
-	// return false;
 }
 
 void remove_min()
@@ -153,32 +131,7 @@ void remove_max()
 	return;
 }
 
-// bool FIFO(page *new_page)
-// {
-// 	bool hit = false;
-//
-// 	//page not in list
-// 	if (!in_list(new_page))
-// 	{
-//     fprintf(stderr, "page (%d-%d) not in list(%ld)\n", new_page->get_pid(), new_page->get_addr(), page_list.size());
-// 		//page list is full
-// 		if (page_list.size() >= kMaxListLen)
-// 		{
-// 			page_list.pop_front();
-// 		}
-// 		page_list.push_back(new_page);
-// 	}
-//
-// 	//page in list
-// 	else
-// 	{
-// 		hit = true;
-// 	}
-// 	return hit;
-// }
-
 bool FIFO(page* p) {
-  // fprintf(stderr, "checking (%d-%d) against PL(%ld)\n", p->get_pid(), p->get_addr(), page_list.size());
   if (in_list(p)) {
     return true;
   }
@@ -294,8 +247,7 @@ bool RAND(page *new_page)
 		if (page_list.size() >= kMaxListLen)
 		{
 			list<page*>::iterator it = page_list.begin();
-			// advance(it, random(0, page_list.size()-1));
-      advance(it, rand() % page_list.size()); // FIXME: is this correct?
+      advance(it, rand() % page_list.size());
 			page_list.erase(it);
 		}
 		page_list.push_back(new_page);
@@ -333,11 +285,13 @@ bool add_new_procs(int t, unordered_map<int, process*>& current_processes, prior
     // there's at least four free pages in the free page list.
     current_processes.insert(pair<int, process*>(p->get_pid(), p));
     job_queue.pop();
-    // fprintf(stderr, "[%d] added process %d to plist(%ld)\n", t, p->get_pid(), page_list.size());
+
+    printf("[%02d.%02d] PID %d swapped in (%d pages for %ds)\n", t/kTicksPerSec, t%kTicksPerSec, p->get_pid(), p->get_page_size(), p->get_running_time());
 
     return true;
   }
-  // fprintf(stderr, "[%d] process %d hasn't arrived yet (arrives at %d)\n", t/kTicksPerSec, p->get_pid(), p->get_arrival_time());
+  // TODO: print memory map for all
+
   return false;
 }
 
@@ -347,12 +301,9 @@ results_t simulate(ReplaceFunc replace) {
 
   int hits = 0, misses = 0;
 
-  int brk_count = 0, ave_pages = 0; // TODO: remove
-
   unordered_map<int, process*> current_processes; // pid as index
 
   for (int t = 0; t < kTotalRuntime * kTicksPerSec; t++) {  // run for 60 "seconds"
-  // for (int t = 0; t < 5; t++) {  // run for 60 "seconds"
     if (job_queue.size() == 0) {
       break;
     }
@@ -365,6 +316,10 @@ results_t simulate(ReplaceFunc replace) {
         // - remove all of its pages from the page table
         remove_process_pages(it->second->get_pid());
         // - remove it from the process map
+
+        printf("[%02d.%02d] PID %d swapped out (%d pages for %ds)\n", t/kTicksPerSec, t%kTicksPerSec, it->second->get_pid(), it->second->get_page_size(), it->second->get_running_time());
+        // TODO: print memory map
+
         #ifdef DEBUG
         fprintf(stderr, "[%d] removing process %d from plist(%ld) and proc_queue(%ld)\n", t, it->second->get_pid(), page_list.size(), current_processes.size());
         #endif
@@ -372,7 +327,6 @@ results_t simulate(ReplaceFunc replace) {
         it = current_processes.erase(it);
         add_new_procs(t, current_processes, job_queue);
 
-        ++brk_count;
         break;
       }
 
@@ -395,15 +349,8 @@ results_t simulate(ReplaceFunc replace) {
 
       ++it;
     }
-    ave_pages += page_list.size();
   }
 
-  #ifdef DEBUG
-  fprintf(stderr, "breaks: %d\n", brk_count);
-  fprintf(stderr, "ave pages: %d\n", ave_pages / (kTotalRuntime*kTicksPerSec));
-  fprintf(stderr, "pages left: %lu\n", job_queue.size());
-  fprintf(stderr, "returning\n");
-  #endif
   return results_t(hits, misses);
 }
 
@@ -460,24 +407,8 @@ int main()
 
   // srand(time(0));
 
-  // uncomment for testing
-  // test();
-  // return 0;
-
   int hits = 0, misses = 0;
   for (int i = 0; i < 5; i++) {
-
-		// initial_page_list();
-		// generate_job_queue();
-
-    // fprintf(stderr, "page list has %ld pages\n", page_list.size());
-
-		// priority queue sorted by arrival time
-		// for (int i = 0; i < 150; i++) {
-		//   cout<<job_queue.top()<<endl;
-		//   job_queue.pop();
-		// }
-
     results_t results = simulate(repl_func);
     #ifdef DEBUG
     fprintf(stderr, "returned\n");
