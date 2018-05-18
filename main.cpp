@@ -7,6 +7,9 @@
 #include "process.h"
 #include "constants.h"
 
+// uncomment this for debug output
+// #define DEBUG
+
 using namespace std;
 
 struct compare
@@ -55,7 +58,9 @@ int processSize()
 //generate 150 jobs
 priority_queue<process*, vector<process*>, compare> generate_job_queue()
 {
+  #ifdef DEBUG
   fprintf(stderr, "generating jobs queue\n");
+  #endif
   priority_queue<process*, vector<process*>, compare> job_queue;
   for (int i = 0; i < kNumJobs; i++)
   {
@@ -67,7 +72,9 @@ priority_queue<process*, vector<process*>, compare> generate_job_queue()
     process* newprocess = new process(i, size, arrival, service);
     job_queue.push(newprocess);
   }
+  #ifdef DEBUG
   fprintf(stderr, "generated jobs queue\n");
+  #endif
   return job_queue;
 }
 
@@ -85,11 +92,13 @@ bool in_list(page *new_page)
     }
   }
   // return false;
+  #ifdef DEBUG
   if (found) {
     fprintf(stderr, "RETURN found\n");
   } else {
     fprintf(stderr, "RETURN not found\n");
   }
+  #endif
   return found;
 
   // // list <page>::iterator it;
@@ -174,14 +183,20 @@ bool FIFO(page* p) {
     return true;
   }
   if (page_list.size() >= kMaxListLen) {
+    #ifdef DEBUG
     fprintf(stderr, "swapping in (%d-%d) to PL(%ld) -> ", p->get_pid(), p->get_addr(), page_list.size());
+    #endif
     page_list.pop_front();
   } else {
+    #ifdef DEBUG
     fprintf(stderr, "adding (%d-%d) to PL(%ld) -> ", p->get_pid(), p->get_addr(), page_list.size());
+    #endif
   }
   page* pnew = new page(p->get_pid(), p->get_addr(), 0);
   page_list.push_back(pnew);
+  #ifdef DEBUG
   fprintf(stderr, "new PL(%ld)\n", page_list.size());
+  #endif
 
   return false;
 }
@@ -304,7 +319,9 @@ int remove_process_pages(int pid) {
       ++it;
     }
   }
+  #ifdef DEBUG
   fprintf(stderr, "Removed %d pages with pid %d\n", count, pid);
+  #endif
   return count;
 }
 
@@ -348,7 +365,9 @@ results_t simulate(ReplaceFunc replace) {
         // - remove all of its pages from the page table
         remove_process_pages(it->second->get_pid());
         // - remove it from the process map
+        #ifdef DEBUG
         fprintf(stderr, "[%d] removing process %d from plist(%ld) and proc_queue(%ld)\n", t, it->second->get_pid(), page_list.size(), current_processes.size());
+        #endif
         delete it->second;
         it = current_processes.erase(it);
         add_new_procs(t, current_processes, job_queue);
@@ -366,19 +385,25 @@ results_t simulate(ReplaceFunc replace) {
       }
 
       // pop the memory reference off the process's queue
+      #ifdef DEBUG
       fprintf(stderr, "[%d] accessed & removed page (%d-%d) from proc %d, %lu -> ", t, pages->front().get_pid(), pages->front().get_addr(), it->second->get_pid(), pages->size());
+      #endif
       pages->pop();
+      #ifdef DEBUG
       fprintf(stderr, "%lu left\n", pages->size());
+      #endif
 
       ++it;
     }
     ave_pages += page_list.size();
   }
 
+  #ifdef DEBUG
   fprintf(stderr, "breaks: %d\n", brk_count);
   fprintf(stderr, "ave pages: %d\n", ave_pages / (kTotalRuntime*kTicksPerSec));
   fprintf(stderr, "pages left: %lu\n", job_queue.size());
   fprintf(stderr, "returning\n");
+  #endif
   return results_t(hits, misses);
 }
 
@@ -454,7 +479,9 @@ int main()
 		// }
 
     results_t results = simulate(repl_func);
+    #ifdef DEBUG
     fprintf(stderr, "returned\n");
+    #endif
     printf("[%d] hits:   %5d / %5d\n", i, results.hits,   results.hits+results.misses);
     printf("[%d] misses: %5d / %5d\n", i, results.misses, results.hits+results.misses);
     hits   += results.hits;
