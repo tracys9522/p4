@@ -31,7 +31,7 @@ struct results_t {
 
 typedef bool (*ReplaceFunc)(page*);
 
-list<page*> page_list;     //100
+list<page*> page_list;
 
 // process size in pages
 int page_size[4] = {5,11,17,31};
@@ -43,12 +43,17 @@ int processSize()
   return page_size[choice];
 }
 
+void print_memory_map() {
+  cout << "< ";
+  for (auto it : page_list) {
+    cout << it->get_pid() << " , ";
+  }
+  cout << ">" << endl;
+}
+
 // generate 150 jobs
 priority_queue<process*, vector<process*>, compare> generate_job_queue()
 {
-  #ifdef DEBUG
-  fprintf(stderr, "generating jobs queue\n");
-  #endif
   priority_queue<process*, vector<process*>, compare> job_queue;
   for (int i = 0; i < kNumJobs; i++)
   {
@@ -58,33 +63,18 @@ priority_queue<process*, vector<process*>, compare> generate_job_queue()
     process* newprocess = new process(i, size, arrival, service);
     job_queue.push(newprocess);
   }
-  #ifdef DEBUG
-  fprintf(stderr, "generated jobs queue\n");
-  #endif
+
   return job_queue;
 }
 
 bool in_list(page *new_page)
 {
   bool found = false;
-  // fprintf(stderr, "searching for (%d-%d)\n", new_page->get_pid(), new_page->get_addr());
   for (auto it : page_list) {
     if (new_page->get_pid() == it->get_pid() && new_page->get_addr() == it->get_addr()) {
-      // return true;
-      // fprintf(stderr, "found for (%d-%d)\n", it->get_pid(), it->get_addr());
       found = true;
-    } else {
-      // fprintf(stderr, "not found for (%d-%d)\n", it->get_pid(), it->get_addr());
     }
   }
-  // return false;
-  #ifdef DEBUG
-  if (found) {
-    fprintf(stderr, "RETURN found\n");
-  } else {
-    fprintf(stderr, "RETURN not found\n");
-  }
-  #endif
   return found;
 }
 
@@ -119,7 +109,6 @@ void remove_max()
 			max = (*it)->get_last_ref();
 		}
 	}
-	// for (list<page*>::iterator it = page_list.begin(); it != page_list.end(); ++it)
   for (auto it = page_list.begin(); it != page_list.end(); it++)
 	{
 		if ((*it)->get_last_ref() == max)
@@ -136,20 +125,10 @@ bool FIFO(page* p) {
     return true;
   }
   if (page_list.size() >= kMaxListLen) {
-    #ifdef DEBUG
-    fprintf(stderr, "swapping in (%d-%d) to PL(%ld) -> ", p->get_pid(), p->get_addr(), page_list.size());
-    #endif
     page_list.pop_front();
-  } else {
-    #ifdef DEBUG
-    fprintf(stderr, "adding (%d-%d) to PL(%ld) -> ", p->get_pid(), p->get_addr(), page_list.size());
-    #endif
   }
   page* pnew = new page(p->get_pid(), p->get_addr(), 0);
   page_list.push_back(pnew);
-  #ifdef DEBUG
-  fprintf(stderr, "new PL(%ld)\n", page_list.size());
-  #endif
 
   return false;
 }
@@ -287,10 +266,9 @@ bool add_new_procs(int t, unordered_map<int, process*>& current_processes, prior
     job_queue.pop();
 
     printf("[%02d.%02d] PID %d swapped in (%d pages for %ds)\n", t/kTicksPerSec, t%kTicksPerSec, p->get_pid(), p->get_page_size(), p->get_running_time());
-
+    print_memory_map();
     return true;
   }
-  // TODO: print memory map for all
 
   return false;
 }
@@ -318,7 +296,7 @@ results_t simulate(ReplaceFunc replace) {
         // - remove it from the process map
 
         printf("[%02d.%02d] PID %d swapped out (%d pages for %ds)\n", t/kTicksPerSec, t%kTicksPerSec, it->second->get_pid(), it->second->get_page_size(), it->second->get_running_time());
-        // TODO: print memory map
+        print_memory_map();
 
         #ifdef DEBUG
         fprintf(stderr, "[%d] removing process %d from plist(%ld) and proc_queue(%ld)\n", t, it->second->get_pid(), page_list.size(), current_processes.size());
@@ -410,14 +388,12 @@ int main()
   int hits = 0, misses = 0;
   for (int i = 0; i < 5; i++) {
     results_t results = simulate(repl_func);
-    #ifdef DEBUG
-    fprintf(stderr, "returned\n");
-    #endif
+
     printf("[%d] hits:   %5d / %5d\n", i, results.hits,   results.hits+results.misses);
     printf("[%d] misses: %5d / %5d\n", i, results.misses, results.hits+results.misses);
     hits   += results.hits;
     misses += results.misses;
   }
-  printf("total hits:   %5d / %6d\n", hits,   hits+misses);
-  printf("total misses: %5d / %6d\n", misses, hits+misses);
+  printf("total hits:   %5d / %6d = %f\n", hits,   hits+misses, hits   / (float)(hits+misses));
+  printf("total misses: %5d / %6d = %f\n", misses, hits+misses, misses / (float)(hits+misses));
 }
